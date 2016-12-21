@@ -31,6 +31,12 @@ impl<'t> Type<'t> {
     /// # Returns
     ///
     /// A new Type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// assert_eq!(mongodb_schema::Type::new("Decimal128", 5, 0.75, 26).name, "Decimal128");
+    /// ```
     pub fn new(name: &'t str, count: i64, probability: f32, unique: i64) -> Type {
         Type {
             name: name,

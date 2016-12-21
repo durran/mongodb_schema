@@ -9,15 +9,15 @@
 /// * `count` - The number of occurences for the field.
 /// * `probability` - The probability in the current field.
 /// * `unique` - The count of unique values.
-pub struct Type<'schema> {
-    pub name: &'schema str,
+pub struct Type<'t> {
+    pub name: &'t str,
     pub count: i64,
     pub probability: f32,
     pub unique: i64
 }
 
 /// The Type implementation.
-impl<'schema> Type<'schema> {
+impl<'t> Type<'t> {
 
     /// Instantiate a new type.
     ///
@@ -31,7 +31,7 @@ impl<'schema> Type<'schema> {
     /// # Returns
     ///
     /// A new Type.
-    pub fn new(name: &'schema str, count: i64, probability: f32, unique: i64) -> Type {
+    pub fn new(name: &'t str, count: i64, probability: f32, unique: i64) -> Type {
         Type {
             name: name,
             count: count,
@@ -50,16 +50,16 @@ impl<'schema> Type<'schema> {
 /// * `probability` - The probability of the field existing in a document.
 /// * `has_duplicates` - If duplicate values of the field exist across documents.
 /// * `types` - The encountered types of this field.
-pub struct Field<'schema> {
-    pub name: &'schema str,
+pub struct Field<'f> {
+    pub name: &'f str,
     pub count: i64,
     pub probability: f32,
     pub has_duplicates: bool,
-    pub types: Vec<Type<'schema>>
+    pub types: &'f Vec<Type<'f>>
 }
 
 /// The field implementation.
-impl<'schema> Field<'schema> {
+impl<'f> Field<'f> {
 
     /// Instantiate a new field.
     ///
@@ -75,11 +75,11 @@ impl<'schema> Field<'schema> {
     ///
     /// A new Field.
     pub fn new(
-        name: &'schema str,
+        name: &'f str,
         count: i64,
         probability: f32,
         has_duplicates: bool,
-        types: Vec<Type<'schema>>) -> Field<'schema> {
+        types: &'f Vec<Type<'f>>) -> Field<'f> {
 
         Field {
             name: name,
@@ -97,15 +97,15 @@ impl<'schema> Field<'schema> {
 ///
 /// * `count` - The number of documents analysed.
 /// * `fields` - The various fields in the schema.
-pub struct Schema<'schema> {
+pub struct Schema<'s> {
     pub count: i64,
-    pub fields: Vec<Field<'schema>>
+    pub fields: &'s Vec<Field<'s>>
 }
 
 /// The MongoDB Schema implementation.
 ///
 /// Schemas themselves are immutable.
-impl<'schema> Schema<'schema> {
+impl<'s> Schema<'s> {
 
     /// Instantiate a new schema.
     ///
@@ -117,7 +117,7 @@ impl<'schema> Schema<'schema> {
     /// # Returns
     ///
     /// A new schema.
-    pub fn new(count: i64, fields: Vec<Field>) -> Schema {
+    pub fn new(count: i64, fields: &'s Vec<Field<'s>>) -> Schema {
         Schema {
             count: count,
             fields: fields

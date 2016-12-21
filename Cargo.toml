@@ -8,4 +8,3 @@ authors = [ "Durran Jordan <durran@gmail.com>" ]
 
 name = "mongodb_schema"
 path = "src/lib.rs"
-crate-type = ["dylib"]

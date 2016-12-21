@@ -31,7 +31,7 @@ impl<'schema> Type<'schema> {
     /// # Returns
     ///
     /// A new Type.
-    pub fn new(name: &str, count: i64, probability: f32, unique: i64) -> Type {
+    pub fn new(name: &'schema str, count: i64, probability: f32, unique: i64) -> Type {
         Type {
             name: name,
             count: count,
@@ -58,8 +58,37 @@ pub struct Field<'schema> {
     pub types: Vec<Type<'schema>>
 }
 
+/// The field implementation.
 impl<'schema> Field<'schema> {
 
+    /// Instantiate a new field.
+    ///
+    /// # Parameters
+    ///
+    /// * `name` - The name of the field.
+    /// * `count` - The number of documents with this field.
+    /// * `probability` - The probability of the field existing in a document.
+    /// * `has_duplicates` - If duplicate values of the field exist across documents.
+    /// * `types` - The encountered types of this field.
+    ///
+    /// # Returns
+    ///
+    /// A new Field.
+    pub fn new(
+        name: &'schema str,
+        count: i64,
+        probability: f32,
+        has_duplicates: bool,
+        types: Vec<Type<'schema>>) -> Field<'schema> {
+
+        Field {
+            name: name,
+            count: count,
+            probability: probability,
+            has_duplicates: has_duplicates,
+            types: types
+        }
+    }
 }
 
 /// Represents a MongoDB schema.

@@ -1,0 +1,11 @@
+[package]
+
+name = "mongodb_schema"
+version = "0.0.1"
+authors = [ "Durran Jordan <durran@gmail.com>" ]
+
+[lib]
+
+name = "mongodb_schema"
+path = "src/lib.rs"
+crate-type = ["dylib"]

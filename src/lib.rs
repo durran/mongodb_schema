@@ -1,6 +1,3 @@
-#![crate_name = "schema"]
-#![crate_type = "lib"]
-
 /// Represents a value type in a field.
 ///
 /// # Fields

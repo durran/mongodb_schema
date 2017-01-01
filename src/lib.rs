@@ -1,4 +1,4 @@
-#![crate_name = "mongodb_schema"]
+#![crate_name = "schema"]
 #![crate_type = "lib"]
 
 /// Represents a value type in a field.
@@ -35,7 +35,7 @@ impl<'t> Type<'t> {
     /// # Examples
     ///
     /// ```
-    /// assert_eq!(mongodb_schema::Type::new("Decimal128", 5, 0.75, 26).name, "Decimal128");
+    /// assert_eq!(schema::Type::new("Decimal128", 5, 0.75, 26).name, "Decimal128");
     /// ```
     pub fn new(name: &'t str, count: i64, probability: f32, unique: i64) -> Type {
         Type {
@@ -132,8 +132,8 @@ impl<'s> Schema<'s> {
 }
 
 /// Analyses documents to generate a schema.
-pub struct SchemaAnalyser;
+pub struct Analyser;
 
 /// The analyser implementation.
-impl SchemaAnalyser {
+impl Analyser {
 }

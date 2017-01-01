@@ -1,9 +1,10 @@
-extern crate mongodb_schema;
+extern crate schema;
 
 /// Tests for the mongodb schema module.
 mod test {
-    use mongodb_schema::Type as Type;
-    use mongodb_schema::Field as Field;
+    use schema::Type as Type;
+    use schema::Field as Field;
+    use schema::Schema as Schema;
 
     #[test]
     fn type_must_expose_name() {
@@ -55,5 +56,14 @@ mod test {
         let types = vec![Type::new("Decimal128", 5, 0.75, 26)];
         let field = Field::new("testing", 5, 0.5, true, &types);
         assert_eq!(true, field.has_duplicates);
+    }
+
+    #[test]
+    fn schema_must_expose_count() {
+        let types = vec![Type::new("Decimal128", 5, 0.75, 26)];
+        let field = Field::new("testing", 5, 0.5, true, &types);
+        let fields = vec![field];
+        let schema = Schema::new(10, &fields);
+        assert_eq!(10, schema.count);
     }
 }

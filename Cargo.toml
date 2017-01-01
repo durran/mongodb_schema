@@ -1,10 +1,10 @@
 [package]
 
-name = "mongodb_schema"
+name = "schema"
 version = "0.0.1"
 authors = [ "Durran Jordan <durran@gmail.com>" ]
 
 [lib]
 
-name = "mongodb_schema"
+name = "schema"
 path = "src/lib.rs"

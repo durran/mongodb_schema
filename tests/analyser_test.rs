@@ -2,6 +2,8 @@
 #![cfg_attr(test, plugin(stainless))]
 
 extern crate schema;
+extern crate serde_json;
+
 use schema::Analyser;
 use std::env;
 use std::fs::File;
@@ -22,11 +24,25 @@ describe! analyser_test {
             path.push("tests/fixtures/standard.json");
             let mut f = File::open(path.as_os_str()).unwrap();
             f.read_to_string(&mut s).unwrap();
+            let analyser = Analyser::new(&s);
+            let docs = analyser.documents.as_array().unwrap();
+            let doc = docs[0].as_object().unwrap();
         }
 
-        it "deserializes JSON into documents" {
-            let analyser = Analyser::new(&s);
-            let json = analyser.documents.as_array().unwrap();
+        it "deserializes string elements" {
+            assert_eq!(doc.get("name").unwrap().as_str().unwrap(), "Depeche Mode");
+        }
+
+        it "deserializes integer elements" {
+            assert_eq!(doc.get("albums").unwrap().as_i64().unwrap(), 20);
+        }
+
+        it "deserializes float elements" {
+            assert_eq!(doc.get("rating").unwrap().as_f64().unwrap(), 10.5);
+        }
+
+        it "deserializes bool elements" {
+            assert_eq!(doc.get("active").unwrap().as_bool().unwrap(), true);
         }
     }
 }

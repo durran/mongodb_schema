@@ -3,22 +3,23 @@
 
 extern crate schema;
 use schema::Analyser;
-use std::io::prelude::*;
 use std::env;
 use std::fs::File;
+use std::io::prelude::*;
 use std::path::PathBuf;
 
-describe! field_test {
+describe! analyser_test {
+
+    before_each {
+        let cwd = env::current_dir().unwrap();
+        let mut path = PathBuf::from(&cwd);
+    }
 
     describe! standard_json {
 
         before_each {
-            let cwd = env::current_dir().unwrap();
-            let mut path = PathBuf::from(&cwd);
             let mut s = String::new();
-            path.push("tests");
-            path.push("fixtures");
-            path.push("standard.json");
+            path.push("tests/fixtures/standard.json");
             let mut f = File::open(path.as_os_str()).unwrap();
             f.read_to_string(&mut s).unwrap();
         }

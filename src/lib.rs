@@ -1,3 +1,7 @@
+extern crate serde_json;
+
+use serde_json::Value;
+
 /// Represents a value type in a field.
 ///
 /// # Fields
@@ -129,8 +133,28 @@ impl<'s> Schema<'s> {
 }
 
 /// Analyses documents to generate a schema.
-pub struct Analyser;
+pub struct Analyser {
+    documents: Value
+}
 
 /// The analyser implementation.
 impl Analyser {
+
+    /// Create the new Analyser with the JSON string.
+    ///
+    /// # Parameters
+    ///
+    /// * `documents` - The JSON string of documents to analyse.
+    ///
+    /// # Returns
+    ///
+    /// A new analyser.
+    pub fn new(documents: &str) -> Analyser {
+        Analyser {
+            documents: serde_json::from_str(documents).unwrap()
+        }
+    }
+
+    pub fn run(&self) {
+    }
 }

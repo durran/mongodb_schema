@@ -1,0 +1,14 @@
+[
+    {
+      "name": "Depeche Mode",
+      "albums": 20,
+      "rating": 10.5,
+      "sales": 11387138721631231,
+      "active": true,
+      "members": [
+        "Dave Gahan",
+        "Martin Gore",
+        "Andrew Fletcher"
+      ]
+    }
+]

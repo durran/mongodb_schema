@@ -8,3 +8,7 @@ authors = [ "Durran Jordan <durran@gmail.com>" ]
 
 name = "schema"
 path = "src/lib.rs"
+
+[dependencies]
+
+serde_json = "^0.8"

@@ -12,3 +12,4 @@ path = "src/lib.rs"
 [dependencies]
 
 serde_json = "^0.8"
+stainless = "^0.1.10"

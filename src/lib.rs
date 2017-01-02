@@ -134,7 +134,7 @@ impl<'s> Schema<'s> {
 
 /// Analyses documents to generate a schema.
 pub struct Analyser {
-    documents: Value
+    pub documents: Value
 }
 
 /// The analyser implementation.

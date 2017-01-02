@@ -6,23 +6,26 @@ use schema::Type;
 
 describe! type_test {
 
-    before_each {
-        let t = Type::new("Decimal128", 5, 0.75, 26);
-    }
+    describe! new {
 
-    it "exposes a name property" {
-        assert_eq!("Decimal128", t.name);
-    }
+        before_each {
+            let t = Type::new("Decimal128", 5, 0.75, 26);
+        }
 
-    it "exposes a count property" {
-        assert_eq!(5, t.count);
-    }
+        it "exposes a name property" {
+            assert_eq!("Decimal128", t.name);
+        }
 
-    it "exposes a probability property" {
-        assert_eq!(0.75, t.probability);
-    }
+        it "exposes a count property" {
+            assert_eq!(5, t.count);
+        }
 
-    it "exposes a unique property" {
-        assert_eq!(26, t.unique);
+        it "exposes a probability property" {
+            assert_eq!(0.75, t.probability);
+        }
+
+        it "exposes a unique property" {
+            assert_eq!(26, t.unique);
+        }
     }
 }

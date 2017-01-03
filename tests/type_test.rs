@@ -5,9 +5,7 @@ extern crate schema;
 use schema::Type;
 
 describe! type_test {
-
     describe! new {
-
         before_each {
             let t = Type::new("Decimal128".to_string(), 5, 0.75, 26);
         }

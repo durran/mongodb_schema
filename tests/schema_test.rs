@@ -7,9 +7,7 @@ use schema::Field;
 use schema::Schema;
 
 describe! schema_test {
-
     describe! new {
-
         before_each {
             let mut types = Vec::new();
             let mut fields = Vec::new();

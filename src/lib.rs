@@ -3,6 +3,30 @@ extern crate serde_json;
 use std::collections::BTreeMap;
 use serde_json::Value;
 
+/// The null type constant.
+static NULL: &'static str = "Null";
+
+/// The boolean type constant.
+static BOOLEAN: &'static str = "Boolean";
+
+/// The i64 type constant.
+static INT64: &'static str = "Int64";
+
+/// The u64 type constant.
+static UINT64: &'static str = "UInt64";
+
+/// The f64 type constant.
+static DOUBLE: &'static str = "Double";
+
+/// The string type constant.
+static STRING: &'static str = "String";
+
+/// The array type constant.
+static ARRAY: &'static str = "Array";
+
+/// The object type constant.
+static OBJECT: &'static str = "Object";
+
 /// Represents a value type in a field.
 ///
 /// # Fields
@@ -11,6 +35,7 @@ use serde_json::Value;
 /// * `count` - The number of occurences for the field.
 /// * `probability` - The probability in the current field.
 /// * `unique` - The count of unique values.
+#[derive(Clone)]
 pub struct Type {
     pub name: String,
     pub count: i64,
@@ -58,6 +83,7 @@ impl Type {
 /// * `probability` - The probability of the field existing in a document.
 /// * `has_duplicates` - If duplicate values of the field exist across documents.
 /// * `types` - The encountered types of this field.
+#[derive(Clone)]
 pub struct Field {
     pub name: String,
     pub count: i64,
@@ -140,15 +166,6 @@ pub struct Analyser {
     pub documents: Value
 }
 
-static NULL: &'static str = "Null";
-static BOOLEAN: &'static str = "Boolean";
-static INT64: &'static str = "Int64";
-static UINT64: &'static str = "UInt64";
-static DOUBLE: &'static str = "Double";
-static STRING: &'static str = "String";
-static ARRAY: &'static str = "Array";
-static OBJECT: &'static str = "Object";
-
 /// The analyser implementation.
 impl Analyser {
 
@@ -172,34 +189,42 @@ impl Analyser {
     /// # Returns
     ///
     /// An analysed schema.
-    pub fn run(&self) {
+    pub fn run(&self) -> Schema {
         let mut fields = BTreeMap::new();
         let docs = self.documents.as_array().unwrap();
         for document in docs {
             let doc = document.as_object().unwrap();
             for (name, value) in doc.iter() {
                 match *value {
-                    Value::Null => self.generate_field(&mut fields, name, NULL),
-                    Value::Bool(_) => self.generate_field(&mut fields, name, BOOLEAN),
-                    Value::I64(_) => self.generate_field(&mut fields, name, INT64),
-                    Value::U64(_) => self.generate_field(&mut fields, name, UINT64),
-                    Value::F64(_) => self.generate_field(&mut fields, name, DOUBLE),
-                    Value::String(_) => self.generate_field(&mut fields, name, STRING),
-                    Value::Array(_) => self.generate_field(&mut fields, name, ARRAY),
-                    Value::Object(_) => self.generate_field(&mut fields, name, OBJECT),
+                    Value::Null => self.analyse_field(&mut fields, name, NULL),
+                    Value::Bool(_) => self.analyse_field(&mut fields, name, BOOLEAN),
+                    Value::I64(_) => self.analyse_field(&mut fields, name, INT64),
+                    Value::U64(_) => self.analyse_field(&mut fields, name, UINT64),
+                    Value::F64(_) => self.analyse_field(&mut fields, name, DOUBLE),
+                    Value::String(_) => self.analyse_field(&mut fields, name, STRING),
+                    Value::Array(_) => self.analyse_field(&mut fields, name, ARRAY),
+                    Value::Object(_) => self.analyse_field(&mut fields, name, OBJECT),
                 };
             }
         }
-        Schema::new(docs.len(), Vec::new());
+        return Schema::new(docs.len(), fields.values().cloned().collect());
     }
 
-    fn generate_field(&self, fields: &mut BTreeMap<String, Field>, name: &str, category: &str) {
+    /// Analyse a field and add it to the map of fields.
+    ///
+    /// # Paramters
+    ///
+    /// * `fields` - The tree map of fields.
+    /// * `name` - The name of the field.
+    /// * `category` - The field type.
+    fn analyse_field(&self, fields: &mut BTreeMap<String, Field>, name: &str, category: &str) {
         if fields.contains_key(name) {
             // Update the existing field.
         } else {
+            let mut types = Vec::new();
             fields.insert(
                 name.to_string(),
-                Field::new(name.to_string(), 1, 1.0, false, Vec::new())
+                Field::new(name.to_string(), 1, 1.0, false, types)
             );
         }
     }

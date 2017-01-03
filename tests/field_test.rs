@@ -6,9 +6,7 @@ use schema::Type;
 use schema::Field;
 
 describe! field_test {
-
     describe! new {
-
         before_each {
             let mut types = Vec::new();
             types.push(Type::new("Decimal128".to_string(), 5, 0.75, 26));

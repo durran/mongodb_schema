@@ -10,6 +10,7 @@ use serde_json::Value;
 /// * `count` - The number of occurences for the field.
 /// * `probability` - The probability in the current field.
 /// * `unique` - The count of unique values.
+#[derive(Copy, Clone)]
 pub struct Type<'t> {
     pub name: &'t str,
     pub count: i64,
@@ -57,6 +58,7 @@ impl<'t> Type<'t> {
 /// * `probability` - The probability of the field existing in a document.
 /// * `has_duplicates` - If duplicate values of the field exist across documents.
 /// * `types` - The encountered types of this field.
+#[derive(Copy, Clone)]
 pub struct Field<'f> {
     pub name: &'f str,
     pub count: i64,
@@ -156,5 +158,7 @@ impl Analyser {
     }
 
     pub fn run(&self) {
+        let fields = vec![];
+        Schema::new(1, &fields);
     }
 }

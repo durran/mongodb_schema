@@ -1,5 +1,6 @@
 extern crate serde_json;
 
+use std::collections::BTreeMap;
 use serde_json::Value;
 
 /// Represents a value type in a field.
@@ -10,16 +11,15 @@ use serde_json::Value;
 /// * `count` - The number of occurences for the field.
 /// * `probability` - The probability in the current field.
 /// * `unique` - The count of unique values.
-#[derive(Copy, Clone)]
-pub struct Type<'t> {
-    pub name: &'t str,
+pub struct Type {
+    pub name: String,
     pub count: i64,
     pub probability: f32,
     pub unique: i64
 }
 
 /// The Type implementation.
-impl<'t> Type<'t> {
+impl Type {
 
     /// Instantiate a new type.
     ///
@@ -37,9 +37,9 @@ impl<'t> Type<'t> {
     /// # Examples
     ///
     /// ```
-    /// assert_eq!(schema::Type::new("Decimal128", 5, 0.75, 26).name, "Decimal128");
+    /// assert_eq!(schema::Type::new("Decimal128".to_string(), 5, 0.75, 26).name, "Decimal128");
     /// ```
-    pub fn new(name: &'t str, count: i64, probability: f32, unique: i64) -> Type {
+    pub fn new(name: String, count: i64, probability: f32, unique: i64) -> Type {
         Type {
             name: name,
             count: count,
@@ -64,7 +64,7 @@ pub struct Field<'f> {
     pub count: i64,
     pub probability: f32,
     pub has_duplicates: bool,
-    pub types: &'f Vec<Type<'f>>
+    pub types: &'f Vec<Type>
 }
 
 /// The field implementation.
@@ -88,7 +88,7 @@ impl<'f> Field<'f> {
         count: i64,
         probability: f32,
         has_duplicates: bool,
-        types: &'f Vec<Type<'f>>) -> Field<'f> {
+        types: &'f Vec<Type>) -> Field<'f> {
 
         Field {
             name: name,
@@ -107,13 +107,11 @@ impl<'f> Field<'f> {
 /// * `count` - The number of documents analysed.
 /// * `fields` - The various fields in the schema.
 pub struct Schema<'s> {
-    pub count: i64,
+    pub count: usize,
     pub fields: &'s Vec<Field<'s>>
 }
 
 /// The MongoDB Schema implementation.
-///
-/// Schemas themselves are immutable.
 impl<'s> Schema<'s> {
 
     /// Instantiate a new schema.
@@ -126,7 +124,7 @@ impl<'s> Schema<'s> {
     /// # Returns
     ///
     /// A new schema.
-    pub fn new(count: i64, fields: &'s Vec<Field<'s>>) -> Schema {
+    pub fn new(count: usize, fields: &'s Vec<Field<'s>>) -> Schema {
         Schema {
             count: count,
             fields: fields
@@ -135,6 +133,10 @@ impl<'s> Schema<'s> {
 }
 
 /// Analyses documents to generate a schema.
+///
+/// # Fields
+///
+/// - `documents` - The JSON documents.
 pub struct Analyser {
     pub documents: Value
 }
@@ -157,8 +159,37 @@ impl Analyser {
         }
     }
 
+    /// Run the analysis on the JSON documents.
+    ///
+    /// # Returns
+    ///
+    /// An analysed schema.
     pub fn run(&self) {
-        let fields = vec![];
-        Schema::new(1, &fields);
+        let mut fields = BTreeMap::new();
+        let docs = self.documents.as_array().unwrap();
+        for document in docs {
+            let doc = document.as_object().unwrap();
+            for (name, value) in doc.iter() {
+                match *value {
+                    Value::Null => self.generate_field(&fields, name, "Null"),
+                    Value::Bool(_) => self.generate_field(&fields, name, "Boolean"),
+                    Value::I64(_) => self.generate_field(&fields, name, "Int64"),
+                    Value::U64(_) => self.generate_field(&fields, name, "UInt64"),
+                    Value::F64(_) => self.generate_field(&fields, name, "Double"),
+                    Value::String(_) => self.generate_field(&fields, name, "String"),
+                    Value::Array(_) => self.generate_field(&fields, name, "Arrray"),
+                    Value::Object(_) => self.generate_field(&fields, name, "Object"),
+                };
+            }
+        }
+        Schema::new(docs.len(), &vec![]);
+    }
+
+    fn generate_field(&self, fields: &BTreeMap<&str, Field>, name: &str, category: &str) {
+        if fields.contains_key("name") {
+            // Update the existing field.
+        } else {
+            // fields.insert(name, Field::new(name, 1, 1.0, false, &vec![]));
+        }
     }
 }

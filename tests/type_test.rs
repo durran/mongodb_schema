@@ -9,7 +9,7 @@ describe! type_test {
     describe! new {
 
         before_each {
-            let t = Type::new("Decimal128", 5, 0.75, 26);
+            let t = Type::new("Decimal128".to_string(), 5, 0.75, 26);
         }
 
         it "exposes a name property" {

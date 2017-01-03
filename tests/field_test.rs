@@ -10,7 +10,7 @@ describe! field_test {
     describe! new {
 
         before_each {
-            let types = vec![Type::new("Decimal128", 5, 0.75, 26)];
+            let types = vec![Type::new("Decimal128".to_string(), 5, 0.75, 26)];
             let field = Field::new("testing", 5, 0.5, true, &types);
         }
 

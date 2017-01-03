@@ -222,10 +222,8 @@ impl Analyser {
             // Update the existing field.
         } else {
             let mut types = Vec::new();
-            fields.insert(
-                name.to_string(),
-                Field::new(name.to_string(), 1, 1.0, false, types)
-            );
+            types.push(Type::new(category.to_string(), 1, 1.0, 1));
+            fields.insert(name.to_string(), Field::new(name.to_string(), 1, 1.0, false, types));
         }
     }
 }

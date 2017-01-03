@@ -58,9 +58,8 @@ impl Type {
 /// * `probability` - The probability of the field existing in a document.
 /// * `has_duplicates` - If duplicate values of the field exist across documents.
 /// * `types` - The encountered types of this field.
-#[derive(Copy, Clone)]
 pub struct Field<'f> {
-    pub name: &'f str,
+    pub name: String,
     pub count: i64,
     pub probability: f32,
     pub has_duplicates: bool,
@@ -84,7 +83,7 @@ impl<'f> Field<'f> {
     ///
     /// A new Field.
     pub fn new(
-        name: &'f str,
+        name: String,
         count: i64,
         probability: f32,
         has_duplicates: bool,

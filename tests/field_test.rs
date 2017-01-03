@@ -11,7 +11,7 @@ describe! field_test {
 
         before_each {
             let types = vec![Type::new("Decimal128".to_string(), 5, 0.75, 26)];
-            let field = Field::new("testing", 5, 0.5, true, &types);
+            let field = Field::new("testing".to_string(), 5, 0.5, true, &types);
         }
 
         it "exposes a name property" {

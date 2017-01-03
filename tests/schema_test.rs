@@ -11,10 +11,11 @@ describe! schema_test {
     describe! new {
 
         before_each {
-            let types = vec![Type::new("Decimal128".to_string(), 5, 0.75, 26)];
-            let field = Field::new("testing".to_string(), 5, 0.5, true, &types);
-            let fields = vec![field];
-            let schema = Schema::new(10, &fields);
+            let mut types = Vec::new();
+            let mut fields = Vec::new();
+            types.push(Type::new("Decimal128".to_string(), 5, 0.75, 26));
+            fields.push(Field::new("testing".to_string(), 5, 0.5, true, types));
+            let schema = Schema::new(10, fields);
         }
 
         it "exposes a count property" {

@@ -10,8 +10,9 @@ describe! field_test {
     describe! new {
 
         before_each {
-            let types = vec![Type::new("Decimal128".to_string(), 5, 0.75, 26)];
-            let field = Field::new("testing".to_string(), 5, 0.5, true, &types);
+            let mut types = Vec::new();
+            types.push(Type::new("Decimal128".to_string(), 5, 0.75, 26));
+            let field = Field::new("testing".to_string(), 5, 0.5, true, types);
         }
 
         it "exposes a name property" {

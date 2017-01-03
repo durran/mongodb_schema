@@ -58,16 +58,16 @@ impl Type {
 /// * `probability` - The probability of the field existing in a document.
 /// * `has_duplicates` - If duplicate values of the field exist across documents.
 /// * `types` - The encountered types of this field.
-pub struct Field<'f> {
+pub struct Field {
     pub name: String,
     pub count: i64,
     pub probability: f32,
     pub has_duplicates: bool,
-    pub types: &'f Vec<Type>
+    pub types: Vec<Type>
 }
 
 /// The field implementation.
-impl<'f> Field<'f> {
+impl Field {
 
     /// Instantiate a new field.
     ///
@@ -87,7 +87,7 @@ impl<'f> Field<'f> {
         count: i64,
         probability: f32,
         has_duplicates: bool,
-        types: &'f Vec<Type>) -> Field<'f> {
+        types: Vec<Type>) -> Field {
 
         Field {
             name: name,
@@ -105,13 +105,13 @@ impl<'f> Field<'f> {
 ///
 /// * `count` - The number of documents analysed.
 /// * `fields` - The various fields in the schema.
-pub struct Schema<'s> {
+pub struct Schema {
     pub count: usize,
-    pub fields: &'s Vec<Field<'s>>
+    pub fields: Vec<Field>
 }
 
 /// The MongoDB Schema implementation.
-impl<'s> Schema<'s> {
+impl Schema {
 
     /// Instantiate a new schema.
     ///
@@ -123,7 +123,7 @@ impl<'s> Schema<'s> {
     /// # Returns
     ///
     /// A new schema.
-    pub fn new(count: usize, fields: &'s Vec<Field<'s>>) -> Schema {
+    pub fn new(count: usize, fields: Vec<Field>) -> Schema {
         Schema {
             count: count,
             fields: fields
@@ -139,6 +139,15 @@ impl<'s> Schema<'s> {
 pub struct Analyser {
     pub documents: Value
 }
+
+static NULL: &'static str = "Null";
+static BOOLEAN: &'static str = "Boolean";
+static INT64: &'static str = "Int64";
+static UINT64: &'static str = "UInt64";
+static DOUBLE: &'static str = "Double";
+static STRING: &'static str = "String";
+static ARRAY: &'static str = "Array";
+static OBJECT: &'static str = "Object";
 
 /// The analyser implementation.
 impl Analyser {
@@ -170,25 +179,28 @@ impl Analyser {
             let doc = document.as_object().unwrap();
             for (name, value) in doc.iter() {
                 match *value {
-                    Value::Null => self.generate_field(&fields, name, "Null"),
-                    Value::Bool(_) => self.generate_field(&fields, name, "Boolean"),
-                    Value::I64(_) => self.generate_field(&fields, name, "Int64"),
-                    Value::U64(_) => self.generate_field(&fields, name, "UInt64"),
-                    Value::F64(_) => self.generate_field(&fields, name, "Double"),
-                    Value::String(_) => self.generate_field(&fields, name, "String"),
-                    Value::Array(_) => self.generate_field(&fields, name, "Arrray"),
-                    Value::Object(_) => self.generate_field(&fields, name, "Object"),
+                    Value::Null => self.generate_field(&mut fields, name, NULL),
+                    Value::Bool(_) => self.generate_field(&mut fields, name, BOOLEAN),
+                    Value::I64(_) => self.generate_field(&mut fields, name, INT64),
+                    Value::U64(_) => self.generate_field(&mut fields, name, UINT64),
+                    Value::F64(_) => self.generate_field(&mut fields, name, DOUBLE),
+                    Value::String(_) => self.generate_field(&mut fields, name, STRING),
+                    Value::Array(_) => self.generate_field(&mut fields, name, ARRAY),
+                    Value::Object(_) => self.generate_field(&mut fields, name, OBJECT),
                 };
             }
         }
-        Schema::new(docs.len(), &vec![]);
+        Schema::new(docs.len(), Vec::new());
     }
 
-    fn generate_field(&self, fields: &BTreeMap<&str, Field>, name: &str, category: &str) {
-        if fields.contains_key("name") {
+    fn generate_field(&self, fields: &mut BTreeMap<String, Field>, name: &str, category: &str) {
+        if fields.contains_key(name) {
             // Update the existing field.
         } else {
-            // fields.insert(name, Field::new(name, 1, 1.0, false, &vec![]));
+            fields.insert(
+                name.to_string(),
+                Field::new(name.to_string(), 1, 1.0, false, Vec::new())
+            );
         }
     }
 }

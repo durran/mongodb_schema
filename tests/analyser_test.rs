@@ -89,6 +89,34 @@ describe! analyser_test {
                 assert_eq!(schema.fields[2].has_duplicates, false);
                 assert_eq!(schema.fields[3].has_duplicates, false);
             }
+
+            it "sets the field types name" {
+                assert_eq!(schema.fields[0].types[0].name, "Boolean");
+                assert_eq!(schema.fields[1].types[0].name, "UInt64");
+                assert_eq!(schema.fields[2].types[0].name, "String");
+                assert_eq!(schema.fields[3].types[0].name, "Double");
+            }
+
+            it "sets the field types count" {
+                assert_eq!(schema.fields[0].types[0].count, 1);
+                assert_eq!(schema.fields[1].types[0].count, 1);
+                assert_eq!(schema.fields[2].types[0].count, 1);
+                assert_eq!(schema.fields[3].types[0].count, 1);
+            }
+
+            it "sets the field types probability" {
+                assert_eq!(schema.fields[0].types[0].probability, 1.0);
+                assert_eq!(schema.fields[1].types[0].probability, 1.0);
+                assert_eq!(schema.fields[2].types[0].probability, 1.0);
+                assert_eq!(schema.fields[3].types[0].probability, 1.0);
+            }
+
+            it "sets the field types unique values" {
+                assert_eq!(schema.fields[0].types[0].unique, 1);
+                assert_eq!(schema.fields[1].types[0].unique, 1);
+                assert_eq!(schema.fields[2].types[0].unique, 1);
+                assert_eq!(schema.fields[3].types[0].unique, 1);
+            }
         }
     }
 }
